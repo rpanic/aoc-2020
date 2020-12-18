@@ -8,12 +8,12 @@ fun readDay(day: Int, puzzle: Int) : List<String>{
 
 fun main(){
 
-    val day = 17
-    val puzzleNum = 2
+    val day = 18
+    val puzzleNum = 1
 
     val input = readDay(day, 1)
 
-    val puzzle: AdventOfCodePuzzle = Day17()
+    val puzzle: AdventOfCodePuzzle = Day18()
     val output: String
 
     if(puzzleNum == 1){
