@@ -1,3 +1,5 @@
+import java.lang.IllegalStateException
+
 class Day18 : AdventOfCodePuzzle() {
 
     override fun puzzleOne(input: List<String>): String {
@@ -14,25 +16,39 @@ class Day18 : AdventOfCodePuzzle() {
 
     }
 
-    fun doOperation(ops: List<String>) : Int{
+    fun doOperation(ops: List<String>) : Long{
 
         var currentOp = 0
         var operator = ""
-        var first = -1
-        var second = -1
+        var first = -1L
+        var second = -1L
 
         while(currentOp < ops.size){
 
             if(ops[currentOp] == "("){
 
-                val x = doOperation(ops.subList(currentOp, ops.size))
-                println("${ops.subList(currentOp, ops.size).joinToString(" ")} = $x")
-                if(first == -1){
+                val x = doOperation(ops.subList(currentOp + 1, ops.size))
+                println("${ops.subList(currentOp, ops.withIndex().drop(currentOp).first { it.value == ")" }.index + 1).joinToString(" ")} = $x")
+                if(first == -1L){
                     first = x
                 }else{
                     second = x
                 }
-                currentOp = ops.drop(currentOp).withIndex().find { it.value == ")" }!!.index
+
+                val closingBracket = ops.withIndex().drop(currentOp).fold(0 to -1) { acc, indexedValue ->
+                    if(indexedValue.value == "("){
+                        acc.first + 1 to acc.second
+                    }else if(indexedValue.value == ")"){
+                        if(acc.first == 1 && acc.second == -1){
+                            acc.first - 1 to indexedValue.index
+                        }else{
+                            acc.first - 1 to acc.second
+                        }
+                    }else{
+                        acc
+                    }
+                }
+                currentOp = closingBracket.second
 
             }else if(ops[currentOp] in listOf("+", "*")){
 
@@ -44,14 +60,14 @@ class Day18 : AdventOfCodePuzzle() {
 
             }else{
 
-                if(first == -1)
-                    first = ops[currentOp].toInt()
+                if(first == -1L)
+                    first = ops[currentOp].toLong()
                 else
-                    second = ops[currentOp].toInt()
+                    second = ops[currentOp].toLong()
 
             }
 
-            if(second != -1){
+            if(second != -1L){
                 if(operator == "+"){
                     first += second
                 }else if(operator == "*"){
